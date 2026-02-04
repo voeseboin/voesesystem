@@ -13,12 +13,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: gradle
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -33,8 +31,8 @@ jobs:
           npx cap add android
           npx cap sync
           cd android
-          # Forzamos a que use Java 21 explícitamente en este paso
-          ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME_21_X64
+          # Usamos JAVA_HOME directamente que ya apunta a Java 21
+          ./gradlew assembleDebug
           
       - name: Upload APK
         if: success()
