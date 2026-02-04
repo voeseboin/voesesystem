@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -29,12 +30,17 @@ jobs:
           rm -rf android
           npx cap add android
           npx cap sync
-
-          # SOLUCIÓN PARA CLASES DUPLICADAS (KOTLIN)
+          
+          # FORZAR COMPATIBILIDAD DE KOTLIN
           cd android
-          echo "configurations.all { resolutionStrategy { force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'; force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'; force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22' } }" >> build.gradle
-
+          echo "android.useAndroidX=true" >> gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+          
+          # Comando para limpiar duplicados en el archivo de construcción
+          sed -i '/dependencies {/a \    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))' app/build.gradle
+          
           ./gradlew assembleDebug
+          
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
