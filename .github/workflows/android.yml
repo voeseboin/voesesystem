@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: set up JDK 21
+      - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
 
       - uses: actions/setup-node@v4
@@ -20,22 +20,19 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npm install @capacitor/android @capacitor/core @capacitor/cli
+          npm install @capacitor/cli @capacitor/core @capacitor/android
 
       - name: Build App
         run: npm run build
 
       - name: Build APK
         run: |
-          # Borrar carpeta previa para evitar conflictos
           rm -rf android
-          # Crear proyecto Android
           npx cap add android
-          # Sincronizar archivos
           npx cap sync
-          # Entrar y ejecutar compilación ignorando advertencias de versiones
           cd android
-          ./gradlew assembleDebug --stacktrace
+          # Forzamos a Gradle a usar Java 17 y compilamos
+          ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
 
       - name: Upload APK
         if: success()
