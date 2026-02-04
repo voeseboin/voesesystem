@@ -26,8 +26,10 @@ jobs:
 
       - name: Build APK
         run: |
-          npm install @capacitor/android
-          if [ ! -d "android" ]; then npx cap add android; fi
+          npm install @capacitor/android @capacitor/core @capacitor/cli
+          # Borramos la carpeta android vieja para evitar conflictos de versiones
+          rm -rf android
+          npx cap add android
           npx cap sync
           cd android && ./gradlew assembleDebug
 
