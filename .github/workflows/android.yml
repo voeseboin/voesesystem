@@ -26,18 +26,16 @@ jobs:
 
       - name: Build APK
         run: |
+          # Instalamos Capacitor y agregamos la carpeta android que falta
           npm install @capacitor/cli @capacitor/core @capacitor/android
-          rm -rf android
           npx cap add android
-          npx cap sync
+          npx cap sync android
           
-          # FORZAR COMPATIBILIDAD DE KOTLIN
           cd android
+          # Forzamos compatibilidad de librerías
           echo "android.useAndroidX=true" >> gradle.properties
           echo "android.enableJetifier=true" >> gradle.properties
-          
-          # Comando para limpiar duplicados en el archivo de construcción
-          sed -i '/dependencies {/a \    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))' app/build.gradle
+          echo "configurations.all { resolutionStrategy { force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22' } }" >> build.gradle
           
           ./gradlew assembleDebug
           
