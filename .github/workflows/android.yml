@@ -31,7 +31,8 @@ jobs:
           npx cap add android
           npx cap sync
           cd android
-          # Usamos JAVA_HOME directamente que ya apunta a Java 21
+          # TRUCO MÁGICO: Forzamos a que no use las librerías duplicadas de Kotlin viejo
+          echo "configurations.all { resolutionStrategy.eachDependency { DependencyResolveDetails details -> if (details.requested.group == 'org.jetbrains.kotlin') { details.useVersion '1.8.22' } } }" >> build.gradle
           ./gradlew assembleDebug
           
       - name: Upload APK
