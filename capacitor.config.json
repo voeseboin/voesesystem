@@ -1,0 +1,18 @@
+{
+  "appId": "com.voesesystem.app",
+  "appName": "VoeseSystem",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0f172a"
+    }
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "release-key.keystore",
+      "keystoreAlias": "voesesystem"
+    }
+  }
+}
